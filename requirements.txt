@@ -1,0 +1,12 @@
+# Pinned to the versions recorded in logs/env_info.json (Python 3.13, CUDA 12.4).
+# Install the CUDA build of PyTorch first:
+#   pip install torch==2.6.0 --index-url https://download.pytorch.org/whl/cu124
+torch==2.6.0
+transformers==5.8.0
+peft==0.21.2
+accelerate==1.15.0
+huggingface_hub==1.33.0
+datasets==4.8.5
+numpy==2.2.3
+librosa==1.0.0
+soundfile==0.12.1

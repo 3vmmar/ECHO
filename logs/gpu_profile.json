@@ -1,0 +1,94 @@
+{
+  "note": "Synthetic inputs (random mel features and token ids) padded to the full 30 s encoder length. Measures memory and speed only, not training quality.",
+  "seed": 42,
+  "model": "openai/whisper-small",
+  "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU",
+  "vram_gb": 8.59,
+  "versions": {
+    "torch": "2.6.0+cu124",
+    "transformers": "5.8.0",
+    "peft": "0.21.2"
+  },
+  "settings": {
+    "batch_size": 1,
+    "mel_frames": 3000,
+    "label_tokens": 80,
+    "weights": "fp32",
+    "autocast": "bf16",
+    "gradient_checkpointing": true,
+    "optimizer": "AdamW",
+    "lr": 0.0001,
+    "lora_alpha": "2 x rank",
+    "lora_dropout": 0.05,
+    "steps": 6,
+    "warmup_steps_excluded": 1
+  },
+  "runs": [
+    {
+      "rank": 8,
+      "target_modules": [
+        "q_proj",
+        "v_proj"
+      ],
+      "peak_gb": 2.14,
+      "step_s": 0.178
+    },
+    {
+      "rank": 8,
+      "target_modules": [
+        "q_proj",
+        "k_proj",
+        "v_proj",
+        "out_proj",
+        "fc1",
+        "fc2"
+      ],
+      "peak_gb": 2.54,
+      "step_s": 0.289
+    },
+    {
+      "rank": 16,
+      "target_modules": [
+        "q_proj",
+        "v_proj"
+      ],
+      "peak_gb": 2.16,
+      "step_s": 0.168
+    },
+    {
+      "rank": 16,
+      "target_modules": [
+        "q_proj",
+        "k_proj",
+        "v_proj",
+        "out_proj",
+        "fc1",
+        "fc2"
+      ],
+      "peak_gb": 2.59,
+      "step_s": 0.314
+    },
+    {
+      "rank": 32,
+      "target_modules": [
+        "q_proj",
+        "v_proj"
+      ],
+      "peak_gb": 2.18,
+      "step_s": 0.172
+    },
+    {
+      "rank": 32,
+      "target_modules": [
+        "q_proj",
+        "k_proj",
+        "v_proj",
+        "out_proj",
+        "fc1",
+        "fc2"
+      ],
+      "peak_gb": 2.68,
+      "step_s": 0.282
+    }
+  ]
+}

@@ -1,13 +1,34 @@
+# Python
 __pycache__/
 *.pyc
 .venv/
+.env
+
+# Notebooks
 .ipynb_checkpoints/
+
+# Private data: audio and consent records live outside the repo (C:\ECHO_DATA)
 *.wav
 *.m4a
 *.mp3
+*.flac
+*.ogg
+*.opus
+consent/
+
+# Model artifacts
 *.safetensors
 *.pt
 *.bin
+*.ckpt
 results/checkpoints/
 outputs/
-.env
+
+# Predictions contain transcripts of private speech
+predictions/
+
+# Editor and OS
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store

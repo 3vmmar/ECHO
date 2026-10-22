@@ -1,0 +1,19 @@
+{
+  "python": "3.13.0 (tags/v3.13.0:60403a5, Oct  7 2024, 09:38:07) [MSC v.1941 64 bit (AMD64)]",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "cuda_available": true,
+  "cuda_version": "12.4",
+  "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU",
+  "vram_gb": 8.59,
+  "packages": {
+    "torch": "2.6.0+cu124",
+    "transformers": "5.8.0",
+    "peft": "0.21.2",
+    "accelerate": "1.15.0",
+    "huggingface_hub": "1.33.0",
+    "librosa": "1.0.0",
+    "numpy": "2.2.3",
+    "soundfile": "0.12.1",
+    "datasets": "4.8.5"
+  }
+}
