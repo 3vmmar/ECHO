@@ -1,0 +1,2 @@
+# Non-lexical hesitation sounds dropped by the scorer on both sides, one per line.
+# Defined on development data only and frozen with the scorer.

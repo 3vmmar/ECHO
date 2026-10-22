@@ -6,7 +6,7 @@ ECHO is a DSAI 456 course project. A student records a short spoken diary entry 
 
 The main task is accurate Egyptian Arabic transcription. A secondary classifier shows the expressed vocal style (happy, sad, angry or neutral), and optional text sentiment is shown separately. Neither output is a diagnosis or a measure of how the user actually feels.
 
-> **Status: early development.** This repository holds the project protocol, the frozen speaker split, environment records and GPU profiling. It contains no audio, transcripts, checkpoints or results.
+> **Status: early development.** This repository holds the project protocol, the frozen speaker split, environment records, GPU profiling and the planned code structure. Modules and notebooks describe what they will do but are not implemented yet. The repository contains no audio, transcripts, checkpoints or results.
 
 ## Research question
 
@@ -59,28 +59,51 @@ C:\ECHO_DATA
 ├── wav16k/      converted 16 kHz mono audio
 ├── clips/       5 to 20 second clips
 ├── emotion/     acted-emotion recordings
-└── manifests/   clip manifests
+├── manifests/   clip manifests and transcripts
+├── predictions/ model outputs, written once
+├── checkpoints/ LoRA adapters
+└── diary/       entries saved by the app
 ```
 
-Audio, consent records, checkpoints and predictions are never committed, and `.gitignore` blocks the common file types.
+Audio, consent records, checkpoints and predictions are never committed, and `.gitignore` blocks the common file types. File naming, manifest columns and consent handling are described in [`docs/data_protocol.md`](docs/data_protocol.md), and the spelling conventions in [`docs/transcription_guide.md`](docs/transcription_guide.md).
 
 ## Repository layout
 
 ```
 ECHO/
+├── app/                       Local diary app (Phase 6)
 ├── configs/
 │   ├── protocol.json          Fixed decoding settings and system definitions
 │   ├── split.json             Frozen speaker-to-partition assignment
-│   └── manifest_header.csv    Column header for the clip manifest
-├── logs/                      Environment records and experiment logs
-├── results/                   Metrics and tables (empty for now)
+│   ├── *_header.csv           Column headers for the manifests and transcripts
+│   ├── emotion_sentences.csv  The 8 fixed emotion-corpus sentences
+│   ├── scoring/               Hesitation list and alternative spellings
+│   └── lora/                  One JSON file per LoRA training configuration
+├── docs/                      Data protocol, transcription guide, decision log
+├── logs/                      Environment records, GPU profile, run logs
+├── notebooks/                 One notebook per phase
+├── results/                   Tables and figures (no transcripts)
 ├── scripts/                   Numbered, runnable scripts
-├── src/echo/                  Shared code (data paths so far)
-├── tests/                     Unit tests (empty for now)
+├── src/echo/
+│   ├── paths.py               Data and repository locations
+│   ├── records.py             Write-once outputs, run log, seeds
+│   ├── audio.py               Audio conversion and loading
+│   ├── corpus.py              Clips and references by partition, test-partition guard
+│   ├── scoring/               The single scoring function
+│   ├── asr.py                 Systems A, B and C under the fixed protocol
+│   ├── lora.py                LoRA training with validation early stopping
+│   ├── evaluation.py          Result tables, paired speaker bootstrap, success criteria
+│   ├── emotion.py             Vocal-style features and SVM
+│   ├── sentiment.py           Optional text sentiment
+│   └── diary.py               Local diary storage
+├── tests/                     Unit tests through each module's interface
+├── pyproject.toml             Package and pytest settings
 ├── requirements.txt           Pinned package versions
 ├── LICENSE
 └── README.md
 ```
+
+Each module's docstring states its planned interface. Callers and tests use only that interface; for example, the number normalizer and alignment code inside `scoring/` are reached through `normalize()` and `score()`. `corpus.py` is the single place that refuses the test partition until the protocol is frozen.
 
 ## Getting started
 
@@ -91,13 +114,28 @@ python -m venv .venv
 .venv\Scripts\Activate.ps1
 pip install torch==2.6.0 --index-url https://download.pytorch.org/whl/cu124
 pip install -r requirements.txt
+pip install -e .
 ```
 
-| Script | Purpose |
-|---|---|
-| `scripts/00_env_info.py` | Records Python, CUDA, GPU and package versions to `logs/env_info.json` |
-| `scripts/01_make_split.py` | Creates `configs/split.json` with seed 42. Stops if the file already exists |
-| `scripts/02_gpu_profile.py` | Measures peak GPU memory and step time for Whisper Small with LoRA. Writes `logs/gpu_profile.json` |
+`pip install -e .` makes `src/echo` importable from scripts, notebooks and tests. Run the tests with `python -m pytest`.
+
+| Script | Purpose | Status |
+|---|---|---|
+| `scripts/00_env_info.py` | Records Python, CUDA, GPU and package versions to `logs/env_info.json` | Ready |
+| `scripts/01_make_split.py` | Creates `configs/split.json` with seed 42. Stops if the file already exists | Ready, already run |
+| `scripts/02_gpu_profile.py` | Measures peak GPU memory and step time for Whisper Small with LoRA. Writes `logs/gpu_profile.json` | Ready, already run |
+| `scripts/03_convert_audio.py` | Converts raw recordings to 16 kHz mono WAV | Planned, phase 1 |
+| `scripts/04_check_corpus.py` | Checks the manifests against the speaker split | Planned, phase 1 |
+| `scripts/05_transcribe.py` | Transcribes a partition with A, B or C | Planned, phase 1 |
+| `scripts/06_score.py` | Scores predictions: strict WER, relaxed WER and CER | Planned, phase 1 |
+| `scripts/07_train_lora.py` | Trains one LoRA configuration with validation early stopping | Planned, phase 3 |
+| `scripts/08_freeze_protocol.py` | Freezes the scorer, protocol and selected checkpoint before testing | Planned, phase 3 |
+| `scripts/09_final_evaluation.py` | Final held-out evaluation with the paired bootstrap | Planned, phase 4 |
+| `scripts/10_train_emotion.py` | Trains and evaluates the vocal-style classifier | Planned, phase 5 |
+
+## Notebooks
+
+One notebook per phase in `notebooks/`, from `00_corpus_overview` to `06_usability_study`. Each holds a section outline for now and will call the code in `src/echo`. Notebook outputs can contain private transcripts, so clear all outputs before committing.
 
 ## Compute
 

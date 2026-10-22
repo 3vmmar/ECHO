@@ -10,3 +10,7 @@ datasets==4.8.5
 numpy==2.2.3
 librosa==1.0.0
 soundfile==0.12.1
+
+# Development: tests and notebooks
+pytest==9.1.1
+ipykernel==7.1.0
