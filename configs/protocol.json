@@ -1,0 +1,18 @@
+{
+  "protocol_version": "v0-draft",
+  "language": "ar",
+  "task": "transcribe",
+  "num_beams": 5,
+  "do_sample": false,
+  "temperature": 0,
+  "return_timestamps": false,
+  "prompt": null,
+  "condition_on_previous_text": false,
+  "sample_rate": 16000,
+  "channels": 1,
+  "systems": {
+    "A": "openai/whisper-small",
+    "B": "MAdel121/whisper-small-egyptian-arabic",
+    "C": "openai/whisper-small + LoRA"
+  }
+}

@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+.venv/
+.ipynb_checkpoints/
+*.wav
+*.m4a
+*.mp3
+*.safetensors
+*.pt
+*.bin
+results/checkpoints/
+outputs/
+.env
